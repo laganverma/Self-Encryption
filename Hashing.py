@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 class Block:
-    def __init__(self, index, previous_hash, timestamp, data, hash):
+    def _init_(self, index, previous_hash, timestamp, data, hash):
         self.index = index
         self.previous_hash = previous_hash
         self.timestamp = timestamp
@@ -62,33 +62,53 @@ def add_block(entry, label, blockchain):
     label.config(text="Block #{} added to the blockchain".format(new_block.index))
 
 def show_blockchain(blockchain):
-    if not blockchain:
-        messagebox.showinfo("Blockchain", "Blockchain is empty")
-        return
+        if not blockchain:
+            messagebox.showinfo("Blockchain", "Blockchain is empty")
+            return
 
-    chain = "\n".join(
-        "Block #{}: Data: {}, Hash: {}".format(block.index, block.data, block.hash) for block in blockchain)
-    messagebox.showinfo("Blockchain", chain)
+        # Create a new window
+        show_window = tk.Toplevel()
+        show_window.title("Blockchain View")
+
+        # Create a scrollable text area
+        text_area = tk.Text(show_window, wrap="word", width=50, height=20)
+        text_area.pack(expand=True, fill="both")
+
+        # Populate the text area with blockchain information
+        for block in blockchain:
+            block_info = "Block #{}:\nData: {}\nHash: {}\nPrevious Hash: {}\nTimestamp: {}\n\n".format(
+                block.index, block.data, block.hash, block.previous_hash, block.timestamp)
+            text_area.insert("end", block_info)
+
+        text_area.configure(state="disabled")  # Make the text area read-only
+
 
 def main():
     blockchain = load_blockchain()
 
     root = tk.Tk()
     root.title("Blockchain GUI")
+    root.geometry("400x300")
+    root.configure(bg="#f0f0f0")
 
-    label = tk.Label(root, text="Enter block data:")
+    title_label = tk.Label(root, text="Blockchain Application", font=("Helvetica", 20), bg="#f0f0f0")
+    title_label.pack(pady=(10, 20))
+
+    label = tk.Label(root, text="Enter block data:", font=("Helvetica", 12), bg="#f0f0f0")
     label.pack()
 
-    entry = tk.Entry(root, width=30)
-    entry.pack()
+    entry = tk.Entry(root, width=30, font=("Helvetica", 12))
+    entry.pack(pady=(0, 10))
 
-    add_button = tk.Button(root, text="Add Block", command=lambda: add_block(entry, label, blockchain))
+    add_button = tk.Button(root, text="Add Block", command=lambda: add_block(entry, label, blockchain),
+                           font=("Helvetica", 12), bg="#4caf50", fg="white")
     add_button.pack()
 
-    show_button = tk.Button(root, text="Show Blockchain", command=lambda: show_blockchain(blockchain))
+    show_button = tk.Button(root, text="Show Blockchain", command=lambda: show_blockchain(blockchain),
+                            font=("Helvetica", 12), bg="#2196f3", fg="white")
     show_button.pack()
 
     root.mainloop()
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     main()
