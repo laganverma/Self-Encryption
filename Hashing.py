@@ -66,7 +66,8 @@ def show_blockchain(blockchain):
         messagebox.showinfo("Blockchain", "Blockchain is empty")
         return
 
-    chain = "\n".join("Block #{}: {}".format(block.index, block.data) for block in blockchain)
+    chain = "\n".join(
+        "Block #{}: Data: {}, Hash: {}".format(block.index, block.data, block.hash) for block in blockchain)
     messagebox.showinfo("Blockchain", chain)
 
 def main():
