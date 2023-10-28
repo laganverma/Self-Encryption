@@ -43,20 +43,29 @@ def validate_blockchain(blockchain):
             return False
     return True
 
-def add_block():
+def add_block(entry, label, blockchain):
     new_block_data = entry.get()
     if not new_block_data:
         messagebox.showerror("Error", "Please enter block data")
         return
 
-    new_block = create_new_block(blockchain[-1], new_block_data)
+    if not blockchain:
+        previous_block = create_genesis_block()
+    else:
+        previous_block = blockchain[-1]
+
+    new_block = create_new_block(previous_block, new_block_data)
     blockchain.append(new_block)
     save_blockchain(blockchain)
 
     entry.delete(0, tk.END)
     label.config(text="Block #{} added to the blockchain".format(new_block.index))
 
-def show_blockchain():
+def show_blockchain(blockchain):
+    if not blockchain:
+        messagebox.showinfo("Blockchain", "Blockchain is empty")
+        return
+
     chain = "\n".join("Block #{}: {}".format(block.index, block.data) for block in blockchain)
     messagebox.showinfo("Blockchain", chain)
 
@@ -72,10 +81,10 @@ def main():
     entry = tk.Entry(root, width=30)
     entry.pack()
 
-    add_button = tk.Button(root, text="Add Block", command=add_block)
+    add_button = tk.Button(root, text="Add Block", command=lambda: add_block(entry, label, blockchain))
     add_button.pack()
 
-    show_button = tk.Button(root, text="Show Blockchain", command=show_blockchain)
+    show_button = tk.Button(root, text="Show Blockchain", command=lambda: show_blockchain(blockchain))
     show_button.pack()
 
     root.mainloop()
